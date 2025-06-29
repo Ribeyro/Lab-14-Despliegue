@@ -1,0 +1,32 @@
+name: Build and Deploy .NET Application  # Nombre del flujo
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta automáticamente cada vez que hagas push a la rama main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # El runner será Linux (Ubuntu más reciente)
+
+    steps:
+    - name: Check out code  # Descarga el código del repositorio
+      uses: actions/checkout@v2
+
+    - name: Set up .NET  # Instala .NET 8 en el runner
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0'
+
+    - name: Restore dependencies  # Ejecuta dotnet restore
+      run: dotnet restore
+
+    - name: Build application  # Compila el proyecto en modo Release
+      run: dotnet build --configuration Release
+
+    - name: Publish application  # Publica el proyecto
+      run: dotnet publish --configuration Release --output ./published
+
+    - name: Deploy to server (ejemplo de despliegue)  # Opcional (puedes omitir o personalizar)
+      run: |
+        scp -r ./published username@server:/path/to/deploy
